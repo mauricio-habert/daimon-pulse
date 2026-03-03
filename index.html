@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daimon Pulse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --orange: #D97B1E;
+            --orange-light: #F0A040;
+            --orange-glow: rgba(217, 123, 30, .15);
+            --black: #0A0A0B;
+            --surface: #111113;
+            --surface-2: #19191C;
+            --surface-3: #222226;
+            --border: #2A2A2F;
+            --border-light: #333338;
+            --text: #EDEDEF;
+            --text-secondary: #8B8B93;
+            --text-muted: #5A5A63;
+            --accent-purple: #A78BFA;
+            --accent-green: #34D399;
+            --accent-blue: #60A5FA;
+            --accent-cyan: #22D3EE;
+            --accent-rose: #FB7185;
+            --accent-amber: #FBBF24;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--black);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== GRAIN TEXTURE OVERLAY ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: .03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,10,11,.85);
+            backdrop-filter: blur(20px) saturate(1.8);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-mark {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-sphere {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 35%, #F0A040, var(--orange), #8B5A10);
+            box-shadow: 0 0 12px rgba(217, 123, 30, .35);
+            flex-shrink: 0;
+        }
+
+        .logo-name {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -.3px;
+        }
+
+        .logo-sep {
+            color: var(--text-muted);
+            font-size: 20px;
+            font-weight: 200;
+        }
+
+        .logo-pulse {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--orange);
+            letter-spacing: -.5px;
+        }
+
+        .nav-pills {
+            display: flex;
+            gap: 2px;
+            background: var(--surface);
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .nav-pill {
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: var(--font-body);
+        }
+
+        .nav-pill:hover { color: var(--text); }
+        .nav-pill.active { background: var(--surface-3); color: var(--text); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: var(--font-body);
+        }
+
+        .search-trigger:hover { border-color: var(--border-light); color: var(--text-secondary); }
+
+        .search-trigger kbd {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 2px 5px;
+            background: var(--surface-2);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        /* ===== HERO BENTO ===== */
+        .bento-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr 340px;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .tile {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            position: relative;
+        }
+
+        .tile:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+        }
+
+        /* TILE: Headline */
+        .tile-headline {
+            grid-column: 1 / 3;
+            grid-row: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            cursor: pointer;
+            min-height: 320px;
+        }
+
+        .tile-headline-img {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tile-headline-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tile-headline-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 40%, var(--surface) 95%);
+        }
+
+        .tile-headline-img::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--surface) 0%, transparent 40%);
+            z-index: 1;
+        }
+
+        .tile-headline-body {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 5px 10px;
+            border-radius: var(--radius-xs);
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        .tag-ia { background: rgba(167,139,250,.12); color: var(--accent-purple); border: 1px solid rgba(167,139,250,.2); }
+        .tag-renov { background: rgba(52,211,153,.12); color: var(--accent-green); border: 1px solid rgba(52,211,153,.2); }
+        .tag-reg { background: rgba(96,165,250,.12); color: var(--accent-blue); border: 1px solid rgba(96,165,250,.2); }
+        .tag-mercado { background: rgba(251,191,36,.12); color: var(--accent-amber); border: 1px solid rgba(251,191,36,.2); }
+        .tag-papers { background: rgba(34,211,238,.12); color: var(--accent-cyan); border: 1px solid rgba(34,211,238,.2); }
+        .tag-dist { background: rgba(251,113,133,.12); color: var(--accent-rose); border: 1px solid rgba(251,113,133,.2); }
+        .tag-global { background: rgba(52,211,153,.12); color: var(--accent-green); border: 1px solid rgba(52,211,153,.2); }
+
+        .tile-headline h1 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -.5px;
+            margin-bottom: 14px;
+        }
+
+        .tile-headline p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .tile-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .tile-meta .sep { opacity: .3; }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--orange);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 16px;
+            transition: gap .2s;
+        }
+
+        .read-more:hover { gap: 10px; }
+
+        /* TILE: Radar de tendencias */
+        .tile-radar {
+            grid-column: 3;
+            grid-row: 1 / 3;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .tile-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .tile-label-accent {
+            color: var(--orange);
+        }
+
+        /* Radar chart mockup */
+        .radar-viz {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .radar-svg {
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .radar-topics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radar-topic {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: var(--radius-xs);
+            transition: background .2s;
+            cursor: default;
+        }
+
+        .radar-topic:hover { background: var(--surface-2); }
+
+        .radar-bar-track {
+            flex: 1;
+            height: 4px;
+            background: var(--surface-3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .radar-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s cubic-bezier(.4,0,.2,1);
+        }
+
+        .radar-topic-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+
+        .radar-topic-val {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* TILE: Quick stats row */
+        .tile-stats {
+            grid-column: 1 / 3;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .stat-cell {
+            padding: 20px 24px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: background .2s;
+            cursor: default;
+        }
+
+        .stat-cell:last-child { border-right: none; }
+        .stat-cell:hover { background: var(--surface-2); }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .stat-number.orange { color: var(--orange); }
+        .stat-number.purple { color: var(--accent-purple); }
+        .stat-number.green { color: var(--accent-green); }
+        .stat-number.cyan { color: var(--accent-cyan); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .stat-delta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent-green);
+            background: rgba(52,211,153,.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-top: 2px;
+        }
+
+        .stat-delta.down { color: var(--accent-rose); }
+
+        /* ===== SECTION TITLES ===== */
+        .section-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 20px;
+            background: var(--orange);
+            border-radius: 2px;
+        }
+
+        .section-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            transition: color .2s;
+        }
+
+        .section-link:hover { color: var(--orange); }
+
+        /* ===== FEED CARDS (Bento) ===== */
+        .bento-feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: auto;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+        }
+
+        .card-wide {
+            grid-column: span 2;
+            flex-direction: row;
+        }
+
+        .card-img-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:not(.card-wide) .card-img-wrap {
+            height: 180px;
+        }
+
+        .card-wide .card-img-wrap {
+            width: 38%;
+            flex-shrink: 0;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+
+        .card:hover .card-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .card-img-overlay {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-content h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -.3px;
+            margin-bottom: 8px;
+        }
+
+        .card-wide .card-content h3 {
+            font-size: 20px;
+        }
+
+        .card-content p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .card-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-source {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .card-time {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ===== RESEARCH LAB SECTION ===== */
+        .lab-section {
+            margin-bottom: 48px;
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 16px;
+        }
+
+        /* Paper cards */
+        .paper-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .paper-item {
+            display: grid;
+            grid-template-columns: 52px 1fr auto;
+            gap: 16px;
+            padding: 18px 20px;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .paper-item:last-child { border-bottom: none; }
+        .paper-item:hover { background: var(--surface-2); }
+
+        .paper-score {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 17px;
+        }
+
+        .paper-score.high { background: rgba(52,211,153,.12); color: var(--accent-green); border: 1px solid rgba(52,211,153,.2); }
+        .paper-score.med { background: rgba(251,191,36,.12); color: var(--accent-amber); border: 1px solid rgba(251,191,36,.2); }
+
+        .paper-body h4 {
+            font-family: var(--font-display);
+            font-size: 14.5px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .paper-meta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 12px;
+        }
+
+        .paper-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .paper-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .paper-type {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .paper-type.journal { background: rgba(34,211,238,.1); color: var(--accent-cyan); }
+        .paper-type.preprint { background: rgba(167,139,250,.1); color: var(--accent-purple); }
+        .paper-type.resolucao { background: rgba(96,165,250,.1); color: var(--accent-blue); }
+        .paper-type.report { background: rgba(251,191,36,.1); color: var(--accent-amber); }
+
+        /* Knowledge graph tile */
+        .tile-graph {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .graph-viz {
+            flex: 1;
+            position: relative;
+            min-height: 340px;
+        }
+
+        .graph-node {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+            z-index: 2;
+        }
+
+        .graph-node:hover {
+            transform: scale(1.15);
+            z-index: 3;
+        }
+
+        .graph-node::after {
+            content: attr(data-label);
+            position: absolute;
+            top: calc(100% + 8px);
+            white-space: nowrap;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        .graph-line {
+            position: absolute;
+            background: var(--border-light);
+            height: 1.5px;
+            transform-origin: left center;
+            z-index: 1;
+            opacity: .55;
+        }
+
+        .graph-caption {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 16px;
+            font-family: var(--font-mono);
+        }
+
+        /* ===== DIGEST BANNER ===== */
+        .digest-banner {
+            background: var(--surface);
+            border: 2px solid var(--orange);
+            border-radius: var(--radius);
+            padding: 32px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .digest-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--orange-glow), transparent 40%), linear-gradient(to right, transparent 70%, var(--orange-glow));
+            pointer-events: none;
+        }
+
+        .digest-banner::after {
+            content: '//';
+            position: absolute;
+            right: 180px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-display);
+            font-size: 80px;
+            font-weight: 900;
+            color: var(--orange);
+            opacity: .06;
+            pointer-events: none;
+        }
+
+        .digest-info {
+            position: relative;
+        }
+
+        .digest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--orange);
+            margin-bottom: 8px;
+        }
+
+        .digest-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            margin-bottom: 6px;
+        }
+
+        .digest-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .btn-digest {
+            position: relative;
+            padding: 12px 28px;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .btn-digest:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+        /* ===== TIMELINE (scroll horizontal) ===== */
+        .timeline-section {
+            margin-bottom: 48px;
+        }
+
+        .timeline-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .timeline-scroll::-webkit-scrollbar { height: 4px; }
+        .timeline-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        .tl-card {
+            min-width: 300px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: all .3s;
+            position: relative;
+        }
+
+        .tl-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .tl-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            border-radius: 0 0 2px 2px;
+        }
+
+        .tl-card[data-accent="purple"]::before { background: var(--accent-purple); }
+        .tl-card[data-accent="green"]::before { background: var(--accent-green); }
+        .tl-card[data-accent="blue"]::before { background: var(--accent-blue); }
+        .tl-card[data-accent="amber"]::before { background: var(--accent-amber); }
+        .tl-card[data-accent="cyan"]::before { background: var(--accent-cyan); }
+        .tl-card[data-accent="rose"]::before { background: var(--accent-rose); }
+
+        .tl-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .tl-card[data-accent="blue"] .tl-icon { background: rgba(96,165,250,.12); }
+        .tl-card[data-accent="amber"] .tl-icon { background: rgba(251,191,36,.12); }
+        .tl-card[data-accent="green"] .tl-icon { background: rgba(52,211,153,.12); }
+        .tl-card[data-accent="purple"] .tl-icon { background: rgba(167,139,250,.12); }
+        .tl-card[data-accent="cyan"] .tl-icon { background: rgba(34,211,238,.12); }
+        .tl-card[data-accent="rose"] .tl-icon { background: rgba(251,113,133,.12); }
+
+        .tl-date {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .tl-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .tl-excerpt {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ===== MAPA DO SETOR ===== */
+        .setor-section { margin-bottom: 48px; }
+
+        .setor-tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--surface);
+            padding: 3px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border);
+        }
+
+        .setor-tab {
+            padding: 4px 12px;
+            border-radius: 5px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: var(--font-mono);
+        }
+
+        .setor-tab:hover { color: var(--text); }
+        .setor-tab.active { background: var(--surface-3); color: var(--text); }
+
+        /* Orgaos grid */
+        .orgaos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+            gap: 12px;
+        }
+
+        .orgao-tile {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .orgao-tile::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 20px; right: 20px;
+            height: 2px;
+            border-radius: 0 0 2px 2px;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .orgao-tile:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+        }
+
+        .orgao-tile:hover::before { opacity: 1; }
+
+        [data-entity="aneel"]::before { background: var(--accent-blue); }
+        [data-entity="mme"]::before   { background: var(--accent-amber); }
+        [data-entity="ons"]::before   { background: var(--accent-purple); }
+        [data-entity="epe"]::before   { background: var(--accent-cyan); }
+        [data-entity="ccee"]::before  { background: var(--orange); }
+
+        .orgao-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .entity-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .entity-abbr {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        [data-entity="aneel"] .entity-badge { background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2); }
+        [data-entity="aneel"] .entity-abbr  { color: var(--accent-blue); }
+        [data-entity="mme"] .entity-badge   { background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.2); }
+        [data-entity="mme"] .entity-abbr    { color: var(--accent-amber); }
+        [data-entity="ons"] .entity-badge   { background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.2); }
+        [data-entity="ons"] .entity-abbr    { color: var(--accent-purple); }
+        [data-entity="epe"] .entity-badge   { background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.2); }
+        [data-entity="epe"] .entity-abbr    { color: var(--accent-cyan); }
+        [data-entity="ccee"] .entity-badge  { background: rgba(217,123,30,.1); border: 1px solid rgba(217,123,30,.2); }
+        [data-entity="ccee"] .entity-abbr   { color: var(--orange); }
+
+        .orgao-meta { flex: 1; min-width: 0; }
+
+        .orgao-name {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .orgao-type {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-top: 2px;
+        }
+
+        .entity-signal {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+            flex-shrink: 0;
+        }
+
+        .signal-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+        }
+
+        .signal-dot--high {
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        .signal-dot--med {
+            background: var(--accent-amber);
+            box-shadow: 0 0 6px rgba(251,191,36,.4);
+        }
+
+        .signal-dot--low { background: var(--text-muted); }
+
+        .signal-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .orgao-last-action {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--surface-2);
+            border-radius: var(--radius-xs);
+            border-left: 2px solid var(--border-light);
+        }
+
+        .action-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            flex-shrink: 0;
+        }
+
+        .action-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .action-date {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .orgao-stats {
+            display: flex;
+            gap: 0;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+
+        .orgao-stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .orgao-stat + .orgao-stat {
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+        }
+
+        .orgao-stat-val {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .orgao-stat-val.s-orange { color: var(--orange); }
+        .orgao-stat-val.s-blue   { color: var(--accent-blue); }
+        .orgao-stat-val.s-green  { color: var(--accent-green); }
+        .orgao-stat-val.s-amber  { color: var(--accent-amber); }
+        .orgao-stat-val.s-cyan   { color: var(--accent-cyan); }
+        .orgao-stat-val.s-purple { color: var(--accent-purple); }
+
+        .orgao-stat-key {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Agentes grid */
+        .agentes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 8px;
+        }
+
+        .agente-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            cursor: pointer;
+            transition: all .2s;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agente-chip:hover {
+            border-color: var(--border-light);
+            background: var(--surface-2);
+            transform: translateY(-1px);
+        }
+
+        .agente-chip::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            height: 2px;
+            width: var(--signal-pct, 0%);
+            border-radius: 0 2px 2px 0;
+            transition: width .8s cubic-bezier(.4,0,.2,1);
+        }
+
+        .agente-chip[data-signal="high"]::before { background: var(--orange); }
+        .agente-chip[data-signal="med"]::before  { background: var(--accent-amber); }
+        .agente-chip[data-signal="low"]::before  { background: var(--text-muted); }
+
+        .agente-chip-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .entity-badge--sm {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(251,113,133,.1);
+            border: 1px solid rgba(251,113,133,.15);
+        }
+
+        .entity-badge--sm .entity-abbr {
+            font-size: 9px;
+            color: var(--accent-rose);
+        }
+
+        .agente-signal-bar {
+            flex: 1;
+            height: 3px;
+            background: var(--surface-3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .signal-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s cubic-bezier(.4,0,.2,1);
+        }
+
+        .agente-chip[data-signal="high"] .signal-fill { background: var(--orange); }
+        .agente-chip[data-signal="med"]  .signal-fill { background: var(--accent-amber); }
+        .agente-chip[data-signal="low"]  .signal-fill { background: var(--text-muted); }
+
+        .agente-count {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .agente-name {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .agente-region {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .agente-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+        .micro-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .micro-tag--ia   { background: rgba(167,139,250,.1); color: var(--accent-purple); }
+        .micro-tag--pd   { background: rgba(34,211,238,.1); color: var(--accent-cyan); }
+        .micro-tag--renov { background: rgba(52,211,153,.1); color: var(--accent-green); }
+        .micro-tag--dist { background: rgba(251,113,133,.1); color: var(--accent-rose); }
+        .micro-tag--reg  { background: rgba(96,165,250,.1); color: var(--accent-blue); }
+
+        .setor-panel.hidden { display: none; }
+        .setor-panel { margin-top: 16px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 32px;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-brand img {
+            height: 14px;
+            width: auto;
+            opacity: .4;
+            filter: brightness(0) invert(1);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fade-up .5s cubic-bezier(.4,0,.2,1) both;
+        }
+
+        .delay-1 { animation-delay: .05s; }
+        .delay-2 { animation-delay: .1s; }
+        .delay-3 { animation-delay: .15s; }
+        .delay-4 { animation-delay: .2s; }
+        .delay-5 { animation-delay: .25s; }
+
+        /* ===== FILTER CHIPS (neobrutalist touch) ===== */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            padding: 6px 14px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip:hover { border-color: var(--border-light); color: var(--text); }
+
+        .chip.active {
+            background: var(--orange-glow);
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        .chip .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .bento-hero {
+                grid-template-columns: 1fr;
+            }
+            .tile-headline {
+                grid-column: 1;
+                grid-template-columns: 1fr;
+            }
+            .tile-headline-img { height: 200px; }
+            .tile-radar { grid-column: 1; grid-row: auto; }
+            .tile-stats { grid-column: 1; grid-template-columns: repeat(2, 1fr); }
+            .bento-feed { grid-template-columns: 1fr; }
+            .card-wide { grid-column: 1; flex-direction: column; }
+            .card-wide .card-img-wrap { width: 100%; height: 200px; }
+            .lab-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="logo-mark">
+                    <div class="logo-sphere"></div>
+                    <span class="logo-name">Daimon</span>
+                    <span class="logo-sep">/</span>
+                    <span class="logo-pulse">Pulse</span>
+                </div>
+                <nav class="nav-pills">
+                    <button class="nav-pill active">Feed</button>
+                    <button class="nav-pill">Lab</button>
+                    <button class="nav-pill">Setor</button>
+                    <button class="nav-pill">Digest</button>
+                    <button class="nav-pill">Arquivo</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="status-dot"></div>
+                <span class="status-text">Atualizado 07:02</span>
+                <button class="search-trigger">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    Buscar...
+                    <kbd>Ctrl K</kbd>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ===== HERO BENTO ===== -->
+        <div class="bento-hero">
+
+            <!-- Headline principal -->
+            <div class="tile tile-headline animate-in" onclick="openArticle()">
+                <div class="tile-headline-img">
+                    <img src="img/power-lines.jpg" alt="">
+                </div>
+                <div class="tile-headline-body">
+                    <span class="tag tag-reg">Regulacao</span>
+                    <h1>ANEEL aprova regras ineditas para integracao de baterias em redes de distribuicao</h1>
+                    <p>Resolucao cria modalidade especifica para armazenamento e autoriza 5 distribuidoras a conduzir pilotos. Especialistas projetam reducao de 15% em perdas tecnicas.</p>
+                    <div class="tile-meta">
+                        <span>Canal Energia</span>
+                        <span class="sep">|</span>
+                        <span>28 fev 2026</span>
+                        <span class="sep">|</span>
+                        <span>4 min</span>
+                    </div>
+                    <a href="#" class="read-more">
+                        Ler analise completa
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Radar de tendencias -->
+            <div class="tile tile-radar animate-in delay-1">
+                <div class="tile-header">
+                    <span class="tile-label">Radar <span class="tile-label-accent">// Semana 09</span></span>
+                    <span class="tile-label" style="font-size:10px">mencoes</span>
+                </div>
+
+                <svg class="radar-svg" viewBox="0 0 280 200" style="margin-bottom: 16px;">
+                    <!-- Hexagonal radar background -->
+                    <g transform="translate(140,100)">
+                        <polygon points="0,-80 69,-40 69,40 0,80 -69,40 -69,-40" fill="none" stroke="var(--border)" stroke-width="1"/>
+                        <polygon points="0,-56 48,-28 48,28 0,56 -48,28 -48,-28" fill="none" stroke="var(--border)" stroke-width=".5" opacity=".5"/>
+                        <polygon points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16" fill="none" stroke="var(--border)" stroke-width=".5" opacity=".3"/>
+                        <!-- Data polygon -->
+                        <polygon points="0,-72 55,-25 48,34 0,64 -41,20 -62,-28" fill="var(--orange-glow)" stroke="var(--orange)" stroke-width="1.5"/>
+                        <!-- Data points -->
+                        <circle cx="0" cy="-72" r="3" fill="var(--orange)"/>
+                        <circle cx="55" cy="-25" r="3" fill="var(--orange)"/>
+                        <circle cx="48" cy="34" r="3" fill="var(--orange)"/>
+                        <circle cx="0" cy="64" r="3" fill="var(--orange)"/>
+                        <circle cx="-41" cy="20" r="3" fill="var(--orange)"/>
+                        <circle cx="-62" cy="-28" r="3" fill="var(--orange)"/>
+                        <!-- Labels -->
+                        <text x="0" y="-88" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">Baterias</text>
+                        <text x="82" y="-22" text-anchor="start" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">IA</text>
+                        <text x="62" y="44" text-anchor="start" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">Solar</text>
+                        <text x="0" y="78" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">Tarifas</text>
+                        <text x="-58" y="28" text-anchor="end" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">H2V</text>
+                        <text x="-78" y="-26" text-anchor="end" fill="var(--text-secondary)" font-size="10" font-family="var(--font-mono)">Smart Grid</text>
+                    </g>
+                </svg>
+
+                <div class="radar-topics">
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">Baterias/BESS</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:90%;background:var(--orange)"></div></div>
+                        <span class="radar-topic-val">47</span>
+                    </div>
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">IA Preditiva</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:72%;background:var(--accent-purple)"></div></div>
+                        <span class="radar-topic-val">38</span>
+                    </div>
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">Solar GD</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:65%;background:var(--accent-green)"></div></div>
+                        <span class="radar-topic-val">34</span>
+                    </div>
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">Tarifas</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:55%;background:var(--accent-amber)"></div></div>
+                        <span class="radar-topic-val">29</span>
+                    </div>
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">H2 Verde</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:40%;background:var(--accent-cyan)"></div></div>
+                        <span class="radar-topic-val">21</span>
+                    </div>
+                    <div class="radar-topic">
+                        <span class="radar-topic-name">Smart Grid</span>
+                        <div class="radar-bar-track"><div class="radar-bar" style="width:38%;background:var(--accent-blue)"></div></div>
+                        <span class="radar-topic-val">20</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats strip -->
+            <div class="tile tile-stats animate-in delay-2">
+                <div class="stat-cell">
+                    <span class="stat-number orange">12</span>
+                    <span class="stat-label">noticias hoje</span>
+                    <span class="stat-delta">+3 vs ontem</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-number purple">4</span>
+                    <span class="stat-label">papers relevantes</span>
+                    <span class="stat-delta">+1 novo</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-number green">2</span>
+                    <span class="stat-label">resolucoes ANEEL</span>
+                    <span class="stat-delta">consulta publica</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-number cyan">89%</span>
+                    <span class="stat-label">relevancia media</span>
+                    <span class="stat-delta">+5% vs semana</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FILTERS ===== -->
+        <div class="filters">
+            <button class="chip active" onclick="filterCards('all', this)">Todos</button>
+            <button class="chip" onclick="filterCards('ia', this)"><span class="dot" style="background:var(--accent-purple)"></span>IA & Tech</button>
+            <button class="chip" onclick="filterCards('renov', this)"><span class="dot" style="background:var(--accent-green)"></span>Renovaveis</button>
+            <button class="chip" onclick="filterCards('reg', this)"><span class="dot" style="background:var(--accent-blue)"></span>Regulacao</button>
+            <button class="chip" onclick="filterCards('mercado', this)"><span class="dot" style="background:var(--accent-amber)"></span>Mercado</button>
+            <button class="chip" onclick="filterCards('papers', this)"><span class="dot" style="background:var(--accent-cyan)"></span>Papers</button>
+            <button class="chip" onclick="filterCards('dist', this)"><span class="dot" style="background:var(--accent-rose)"></span>Distribuicao</button>
+        </div>
+
+        <!-- ===== SECTION: Hoje no Setor ===== -->
+        <div class="section-head">
+            <h2 class="section-title">Hoje no Setor</h2>
+            <a href="#" class="section-link">ver todas →</a>
+        </div>
+
+        <div class="bento-feed">
+
+            <!-- Card wide -->
+            <div class="card card-wide animate-in delay-1" data-cat="ia">
+                <div class="card-img-wrap">
+                    <img src="img/ai-tech.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-ia">IA & Tech</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Redes neurais aplicadas a previsao de demanda: novo modelo supera metodos tradicionais em 18%</h3>
+                    <p>Paper publicado no IEEE Transactions on Power Systems apresenta arquitetura transformer adaptada para series temporais de consumo eletrico. Resultados validados em 6 distribuidoras brasileiras.</p>
+                    <div class="card-foot">
+                        <span class="card-source">IEEE Spectrum</span>
+                        <span class="card-time">2h atras</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-2" data-cat="renov">
+                <div class="card-img-wrap">
+                    <img src="img/solar-panels.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-renov">Renovaveis</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Brasil atinge 50 GW de solar e se torna 4o maior mercado fotovoltaico global</h3>
+                    <p>Marco historico coloca o pais a frente da Alemanha. GD responde por 60% do total.</p>
+                    <div class="card-foot">
+                        <span class="card-source">Canal Energia</span>
+                        <span class="card-time">3h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-3" data-cat="mercado">
+                <div class="card-img-wrap">
+                    <img src="img/market-charts.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-mercado">Mercado</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>PLD medio de fevereiro cai 22% e sinaliza excedente hidrico para o 1o semestre</h3>
+                    <p>Reservatorios do SE/CO acima de 70%. CCEE projeta piso para marco e abril.</p>
+                    <div class="card-foot">
+                        <span class="card-source">CCEE</span>
+                        <span class="card-time">5h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-3" data-cat="reg">
+                <div class="card-img-wrap">
+                    <img src="img/regulation.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-reg">Regulacao</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Consulta publica sobre modernizacao tarifaria recebe 800+ contribuicoes</h3>
+                    <p>Distribuidoras debatem modelo binomia para BT. Decisao esperada para abril.</p>
+                    <div class="card-foot">
+                        <span class="card-source">ANEEL</span>
+                        <span class="card-time">4h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-4" data-cat="dist">
+                <div class="card-img-wrap">
+                    <img src="img/distribution.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-dist">Distribuicao</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Smart meters com edge AI: CEMIG pilota deteccao de fraude em tempo real</h3>
+                    <p>Projeto de P&D usa ML embarcado em medidores para identificar irregularidades. Taxa de 94%.</p>
+                    <div class="card-foot">
+                        <span class="card-source">MegaWhat</span>
+                        <span class="card-time">7h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-5" data-cat="global">
+                <div class="card-img-wrap">
+                    <img src="img/globe-energy.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-global">Global</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>IEA eleva projecao de renovaveis para 2030 em 12% no novo World Energy Outlook</h3>
+                    <p>Brasil e India destacados como motores da transicao. Eolica offshore ganha protagonismo.</p>
+                    <div class="card-foot">
+                        <span class="card-source">IEA</span>
+                        <span class="card-time">1 dia</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card normal -->
+            <div class="card animate-in delay-5" data-cat="renov">
+                <div class="card-img-wrap">
+                    <img src="img/wind-turbines.jpg" alt="">
+                    <div class="card-img-overlay">
+                        <span class="tag tag-renov">Renovaveis</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Leilao A-5 contrata 2,3 GW de eolica a preco recorde de R$ 84/MWh</h3>
+                    <p>Desagio de 31% sobre teto. Bahia e RN concentram vencedores.</p>
+                    <div class="card-foot">
+                        <span class="card-source">Canal Energia</span>
+                        <span class="card-time">2 dias</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== DIGEST BANNER ===== -->
+        <div class="digest-banner animate-in">
+            <div class="digest-info">
+                <div class="digest-badge">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    Digest Semanal // Semana 09
+                </div>
+                <h3 class="digest-title">Baterias, IA preditiva e a nova onda regulatoria</h3>
+                <p class="digest-desc">Analise curada das 3 tendencias que marcaram a semana, com contexto e impacto para a equipe.</p>
+            </div>
+            <button class="btn-digest">Ler digest</button>
+        </div>
+
+        <!-- ===== MAPA DO SETOR ===== -->
+        <section class="setor-section">
+            <div class="section-head">
+                <h2 class="section-title">Mapa do Setor</h2>
+                <div class="setor-tabs">
+                    <button class="setor-tab active" data-panel="orgaos">Orgaos</button>
+                    <button class="setor-tab" data-panel="agentes">Agentes</button>
+                    <button class="setor-tab" data-panel="todos">Todos</button>
+                </div>
+                <a href="#" class="section-link">ver sinais →</a>
+            </div>
+
+            <!-- PANEL: Orgaos Reguladores -->
+            <div class="setor-panel" id="panel-orgaos">
+                <div class="orgaos-grid">
+
+                    <div class="orgao-tile animate-in" data-entity="aneel">
+                        <div class="orgao-head">
+                            <div class="entity-badge"><span class="entity-abbr">ANEEL</span></div>
+                            <div class="orgao-meta">
+                                <span class="orgao-name">Ag. Nac. de Energia Eletrica</span>
+                                <span class="orgao-type">Regulador Federal</span>
+                            </div>
+                            <div class="entity-signal">
+                                <span class="signal-dot signal-dot--high"></span>
+                                <span class="signal-label">Alta</span>
+                            </div>
+                        </div>
+                        <div class="orgao-last-action">
+                            <span class="action-label">Ultima</span>
+                            <span class="action-text">REN 1.124/2026 — Baterias em distribuicao</span>
+                            <span class="action-date">28 fev</span>
+                        </div>
+                        <div class="orgao-stats">
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-blue">7</span>
+                                <span class="orgao-stat-key">resolucoes</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-amber">2</span>
+                                <span class="orgao-stat-key">consultas</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">3</span>
+                                <span class="orgao-stat-key">mencoes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="orgao-tile animate-in delay-1" data-entity="mme">
+                        <div class="orgao-head">
+                            <div class="entity-badge"><span class="entity-abbr">MME</span></div>
+                            <div class="orgao-meta">
+                                <span class="orgao-name">Ministerio de Minas e Energia</span>
+                                <span class="orgao-type">Poder Executivo</span>
+                            </div>
+                            <div class="entity-signal">
+                                <span class="signal-dot signal-dot--med"></span>
+                                <span class="signal-label">Media</span>
+                            </div>
+                        </div>
+                        <div class="orgao-last-action">
+                            <span class="action-label">Ultima</span>
+                            <span class="action-text">Portaria 87/2026 — Programa H2 Verde</span>
+                            <span class="action-date">22 fev</span>
+                        </div>
+                        <div class="orgao-stats">
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-amber">4</span>
+                                <span class="orgao-stat-key">portarias</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-amber">1</span>
+                                <span class="orgao-stat-key">consulta</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">1</span>
+                                <span class="orgao-stat-key">mencao</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="orgao-tile animate-in delay-2" data-entity="ons">
+                        <div class="orgao-head">
+                            <div class="entity-badge"><span class="entity-abbr">ONS</span></div>
+                            <div class="orgao-meta">
+                                <span class="orgao-name">Operador Nac. do Sistema</span>
+                                <span class="orgao-type">Operador</span>
+                            </div>
+                            <div class="entity-signal">
+                                <span class="signal-dot signal-dot--med"></span>
+                                <span class="signal-label">Media</span>
+                            </div>
+                        </div>
+                        <div class="orgao-last-action">
+                            <span class="action-label">Ultima</span>
+                            <span class="action-text">NOS 0015/2026 — Curvamento eolico NE</span>
+                            <span class="action-date">26 fev</span>
+                        </div>
+                        <div class="orgao-stats">
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-purple">12</span>
+                                <span class="orgao-stat-key">noticias op</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">0</span>
+                                <span class="orgao-stat-key">alertas</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">2</span>
+                                <span class="orgao-stat-key">mencoes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="orgao-tile animate-in delay-3" data-entity="epe">
+                        <div class="orgao-head">
+                            <div class="entity-badge"><span class="entity-abbr">EPE</span></div>
+                            <div class="orgao-meta">
+                                <span class="orgao-name">Empresa de Pesquisa Energetica</span>
+                                <span class="orgao-type">Planejamento</span>
+                            </div>
+                            <div class="entity-signal">
+                                <span class="signal-dot signal-dot--low"></span>
+                                <span class="signal-label">Baixa</span>
+                            </div>
+                        </div>
+                        <div class="orgao-last-action">
+                            <span class="action-label">Ultima</span>
+                            <span class="action-text">PDE 2035 — Cenario solar ampliado</span>
+                            <span class="action-date">18 fev</span>
+                        </div>
+                        <div class="orgao-stats">
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-cyan">3</span>
+                                <span class="orgao-stat-key">estudos</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-cyan">1</span>
+                                <span class="orgao-stat-key">em curso</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">1</span>
+                                <span class="orgao-stat-key">mencao</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="orgao-tile animate-in delay-4" data-entity="ccee">
+                        <div class="orgao-head">
+                            <div class="entity-badge"><span class="entity-abbr">CCEE</span></div>
+                            <div class="orgao-meta">
+                                <span class="orgao-name">Camara de Comerc. de Energia</span>
+                                <span class="orgao-type">Mercado</span>
+                            </div>
+                            <div class="entity-signal">
+                                <span class="signal-dot signal-dot--high"></span>
+                                <span class="signal-label">Alta</span>
+                            </div>
+                        </div>
+                        <div class="orgao-last-action">
+                            <span class="action-label">Ultima</span>
+                            <span class="action-text">Resultado Leilao A-5 — 2,3 GW eolica</span>
+                            <span class="action-date">20 fev</span>
+                        </div>
+                        <div class="orgao-stats">
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-orange">R$45</span>
+                                <span class="orgao-stat-key">PLD MWh</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-amber">1</span>
+                                <span class="orgao-stat-key">leilao prox</span>
+                            </div>
+                            <div class="orgao-stat">
+                                <span class="orgao-stat-val s-green">2</span>
+                                <span class="orgao-stat-key">mencoes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PANEL: Agentes de Mercado -->
+            <div class="setor-panel hidden" id="panel-agentes">
+                <div class="agentes-grid">
+
+                    <div class="agente-chip" data-signal="high" style="--signal-pct:82%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">CEMIG</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:82%"></div></div>
+                            <span class="agente-count">4 news</span>
+                        </div>
+                        <span class="agente-name">Cemig</span>
+                        <span class="agente-region">MG</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--ia">IA</span>
+                            <span class="micro-tag micro-tag--pd">P&D</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="high" style="--signal-pct:71%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">ENEL</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:71%"></div></div>
+                            <span class="agente-count">3 news</span>
+                        </div>
+                        <span class="agente-name">Enel</span>
+                        <span class="agente-region">SP / RJ</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--dist">Dist</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="med" style="--signal-pct:58%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">CPFL</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:58%"></div></div>
+                            <span class="agente-count">2 news</span>
+                        </div>
+                        <span class="agente-name">CPFL Energia</span>
+                        <span class="agente-region">SP</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--renov">Renov</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="med" style="--signal-pct:52%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">NEO</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:52%"></div></div>
+                            <span class="agente-count">2 news</span>
+                        </div>
+                        <span class="agente-name">Neoenergia</span>
+                        <span class="agente-region">BA / PE</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--renov">Renov</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="med" style="--signal-pct:50%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">EQT</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:50%"></div></div>
+                            <span class="agente-count">2 news</span>
+                        </div>
+                        <span class="agente-name">Equatorial</span>
+                        <span class="agente-region">PA / MA</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--dist">Dist</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="med" style="--signal-pct:45%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">ENRS</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:45%"></div></div>
+                            <span class="agente-count">2 news</span>
+                        </div>
+                        <span class="agente-name">Energisa</span>
+                        <span class="agente-region">MT / TO</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--reg">Reg</span>
+                        </div>
+                    </div>
+
+                    <div class="agente-chip" data-signal="low" style="--signal-pct:28%">
+                        <div class="agente-chip-head">
+                            <div class="entity-badge--sm"><span class="entity-abbr">LGHT</span></div>
+                            <div class="agente-signal-bar"><div class="signal-fill" style="width:28%"></div></div>
+                            <span class="agente-count">1 news</span>
+                        </div>
+                        <span class="agente-name">Light</span>
+                        <span class="agente-region">RJ</span>
+                        <div class="agente-tags">
+                            <span class="micro-tag micro-tag--reg">Reg</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ===== RESEARCH LAB ===== -->
+        <div class="lab-section">
+            <div class="section-head">
+                <h2 class="section-title">Lab // Papers & Pesquisa</h2>
+                <a href="#" class="section-link">connected papers →</a>
+            </div>
+
+            <div class="lab-grid">
+                <!-- Paper list -->
+                <div class="paper-list animate-in">
+                    <div class="paper-item">
+                        <div class="paper-score high">9.2</div>
+                        <div class="paper-body">
+                            <h4>Transformer-based load forecasting for Brazilian distribution networks</h4>
+                            <div class="paper-meta">
+                                <span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+                                    IEEE Trans. Power Syst.
+                                </span>
+                                <span>2026</span>
+                                <span>42 citacoes</span>
+                            </div>
+                        </div>
+                        <div class="paper-actions">
+                            <span class="paper-type journal">Journal</span>
+                        </div>
+                    </div>
+                    <div class="paper-item">
+                        <div class="paper-score high">8.7</div>
+                        <div class="paper-body">
+                            <h4>Digital twins for substation monitoring: a systematic review</h4>
+                            <div class="paper-meta">
+                                <span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+                                    Applied Energy
+                                </span>
+                                <span>2026</span>
+                                <span>28 citacoes</span>
+                            </div>
+                        </div>
+                        <div class="paper-actions">
+                            <span class="paper-type journal">Journal</span>
+                        </div>
+                    </div>
+                    <div class="paper-item">
+                        <div class="paper-score med">7.8</div>
+                        <div class="paper-body">
+                            <h4>Federated learning for non-technical loss detection across heterogeneous utilities</h4>
+                            <div class="paper-meta">
+                                <span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+                                    arXiv
+                                </span>
+                                <span>fev 2026</span>
+                                <span>preprint</span>
+                            </div>
+                        </div>
+                        <div class="paper-actions">
+                            <span class="paper-type preprint">Preprint</span>
+                        </div>
+                    </div>
+                    <div class="paper-item">
+                        <div class="paper-score med">7.4</div>
+                        <div class="paper-body">
+                            <h4>Resolucao Normativa ANEEL n. 1.124/2026 — Armazenamento em redes de distribuicao</h4>
+                            <div class="paper-meta">
+                                <span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+                                    Diario Oficial
+                                </span>
+                                <span>28 fev 2026</span>
+                                <span>normativo</span>
+                            </div>
+                        </div>
+                        <div class="paper-actions">
+                            <span class="paper-type resolucao">Resolucao</span>
+                        </div>
+                    </div>
+                    <div class="paper-item">
+                        <div class="paper-score med">7.1</div>
+                        <div class="paper-body">
+                            <h4>World Energy Outlook 2026: Accelerated renewables scenario for Latin America</h4>
+                            <div class="paper-meta">
+                                <span>
+                                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+                                    IEA
+                                </span>
+                                <span>2026</span>
+                                <span>relatorio</span>
+                            </div>
+                        </div>
+                        <div class="paper-actions">
+                            <span class="paper-type report">Report</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knowledge Graph -->
+                <div class="tile tile-graph animate-in delay-2">
+                    <div class="tile-header">
+                        <span class="tile-label">Grafo de <span class="tile-label-accent">Conexoes</span></span>
+                    </div>
+                    <div class="graph-viz" id="graphViz">
+                        <!-- Generated by JS -->
+                    </div>
+                    <p class="graph-caption">Relacoes entre topicos da semana • hover para explorar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TIMELINE (Regulatorio) ===== -->
+        <div class="timeline-section">
+            <div class="section-head">
+                <h2 class="section-title">Timeline Regulatoria</h2>
+                <a href="#" class="section-link">scroll →</a>
+            </div>
+            <div class="timeline-scroll">
+                <div class="tl-card" data-accent="blue">
+                    <div class="tl-icon">&#9889;</div>
+                    <div class="tl-date">28 fev 2026</div>
+                    <div class="tl-title">REN 1.124 — Baterias em distribuicao</div>
+                    <div class="tl-excerpt">ANEEL aprova diretrizes para BESS em redes de distribuicao. 5 pilotos autorizados.</div>
+                </div>
+                <div class="tl-card" data-accent="blue">
+                    <div class="tl-icon">&#128220;</div>
+                    <div class="tl-date">25 fev 2026</div>
+                    <div class="tl-title">CP 014/2026 — Modernizacao tarifaria</div>
+                    <div class="tl-excerpt">Consulta publica encerrada com 800+ contribuicoes. Tarifa binomia em debate.</div>
+                </div>
+                <div class="tl-card" data-accent="amber">
+                    <div class="tl-icon">&#128200;</div>
+                    <div class="tl-date">20 fev 2026</div>
+                    <div class="tl-title">Leilao A-5 — Resultado</div>
+                    <div class="tl-excerpt">2,3 GW de eolica contratados a R$ 84/MWh. Desagio de 31%.</div>
+                </div>
+                <div class="tl-card" data-accent="green">
+                    <div class="tl-icon">&#9728;&#65039;</div>
+                    <div class="tl-date">15 fev 2026</div>
+                    <div class="tl-title">Marco de 50 GW solar</div>
+                    <div class="tl-excerpt">Brasil ultrapassa Alemanha em capacidade fotovoltaica instalada.</div>
+                </div>
+                <div class="tl-card" data-accent="purple">
+                    <div class="tl-icon">&#128181;</div>
+                    <div class="tl-date">10 fev 2026</div>
+                    <div class="tl-title">PLD piso — Sinal de excedente</div>
+                    <div class="tl-excerpt">Preco de liquidacao atinge minima historica. Reservatorios SE/CO acima de 70%.</div>
+                </div>
+                <div class="tl-card" data-accent="cyan">
+                    <div class="tl-icon">&#127758;</div>
+                    <div class="tl-date">05 fev 2026</div>
+                    <div class="tl-title">IEA World Energy Outlook</div>
+                    <div class="tl-excerpt">Projecao de renovaveis elevada em 12%. Brasil destacado na transicao.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="img-removebg-preview.png" alt="">
+                Daimon Pulse — uso interno
+            </div>
+            <span>curado por IA • atualizado diariamente 07:00 • v0.1</span>
+        </div>
+    </footer>
+
+    <script>
+        // === Knowledge Graph Visualization ===
+        function drawGraph() {
+            const container = document.getElementById('graphViz');
+            const w = container.offsetWidth;
+            const h = container.offsetHeight || 300;
+
+            const nodes = [
+                { id: 'baterias', x: .5, y: .15, size: 42, color: 'var(--orange)', label: 'Baterias' },
+                { id: 'ia', x: .2, y: .32, size: 36, color: 'var(--accent-purple)', label: 'IA' },
+                { id: 'solar', x: .8, y: .3, size: 34, color: 'var(--accent-green)', label: 'Solar GD' },
+                { id: 'perdas', x: .12, y: .65, size: 28, color: 'var(--accent-rose)', label: 'Perdas NT' },
+                { id: 'tarifas', x: .5, y: .52, size: 30, color: 'var(--accent-amber)', label: 'Tarifas' },
+                { id: 'h2v', x: .88, y: .62, size: 26, color: 'var(--accent-cyan)', label: 'H2 Verde' },
+                { id: 'grid', x: .3, y: .85, size: 24, color: 'var(--accent-blue)', label: 'Smart Grid' },
+                { id: 'reg', x: .7, y: .85, size: 26, color: 'var(--accent-blue)', label: 'Regulacao' },
+            ];
+
+            const edges = [
+                ['baterias', 'ia'], ['baterias', 'solar'], ['baterias', 'tarifas'], ['baterias', 'reg'],
+                ['ia', 'perdas'], ['ia', 'grid'], ['ia', 'tarifas'],
+                ['solar', 'tarifas'], ['solar', 'h2v'],
+                ['perdas', 'grid'], ['grid', 'reg'],
+                ['h2v', 'reg'],
+            ];
+
+            const nodeMap = {};
+            nodes.forEach(n => { nodeMap[n.id] = n; });
+
+            let html = '';
+
+            // Draw edges
+            edges.forEach(([a, b]) => {
+                const na = nodeMap[a], nb = nodeMap[b];
+                const x1 = na.x * w, y1 = na.y * h;
+                const x2 = nb.x * w, y2 = nb.y * h;
+                const len = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+                const angle = Math.atan2(y2-y1, x2-x1) * 180 / Math.PI;
+                html += `<div class="graph-line" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
+            });
+
+            // Draw nodes
+            nodes.forEach(n => {
+                const x = n.x * w - n.size/2;
+                const y = n.y * h - n.size/2;
+                html += `<div class="graph-node" data-label="${n.label}" style="left:${x}px;top:${y}px;width:${n.size}px;height:${n.size}px;background:${n.color}20;border:1.5px solid ${n.color};color:${n.color}">${n.size > 28 ? n.label.substring(0,2) : ''}</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Init graph
+        setTimeout(drawGraph, 100);
+        window.addEventListener('resize', drawGraph);
+
+        // Filter
+        function filterCards(cat, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.card').forEach(card => {
+                if (cat === 'all' || card.dataset.cat === cat) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Article overlay placeholder
+        function openArticle() {
+            // would open article detail
+        }
+
+        // Mapa do Setor tab switcher
+        document.querySelectorAll('.setor-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const panel = this.dataset.panel;
+                document.querySelectorAll('.setor-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const orgaos = document.getElementById('panel-orgaos');
+                const agentes = document.getElementById('panel-agentes');
+
+                if (panel === 'orgaos') {
+                    orgaos.classList.remove('hidden');
+                    agentes.classList.add('hidden');
+                } else if (panel === 'agentes') {
+                    orgaos.classList.add('hidden');
+                    agentes.classList.remove('hidden');
+                } else {
+                    orgaos.classList.remove('hidden');
+                    agentes.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Nav pill scroll
+        document.querySelectorAll('.nav-pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                const targets = {
+                    'Feed': '.bento-hero',
+                    'Lab': '.lab-section',
+                    'Setor': '.setor-section',
+                    'Digest': '.digest-banner',
+                    'Arquivo': '.timeline-section'
+                };
+                const sel = targets[this.textContent.trim()];
+                if (sel) document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+
+</body>
+</html>

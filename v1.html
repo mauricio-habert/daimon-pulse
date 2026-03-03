@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daimon Pulse — Inteligencia do Setor Eletrico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            /* Daimon Brand */
+            --daimon-orange: #D97B1E;
+            --daimon-orange-light: #F0A040;
+            --daimon-orange-subtle: #FFF5EB;
+            --daimon-orange-hover: #C06A12;
+            --daimon-black: #1A1A1A;
+            --daimon-dark: #2D2D2D;
+
+            /* Neutrals */
+            --gray-50: #FAFAFA;
+            --gray-100: #F4F4F5;
+            --gray-200: #E4E4E7;
+            --gray-300: #D4D4D8;
+            --gray-400: #A1A1AA;
+            --gray-500: #71717A;
+            --gray-600: #52525B;
+            --gray-700: #3F3F46;
+            --gray-800: #27272A;
+            --gray-900: #18181B;
+
+            /* Category Colors */
+            --cat-ia: #7C3AED;
+            --cat-ia-bg: #F3EEFF;
+            --cat-renov: #059669;
+            --cat-renov-bg: #ECFDF5;
+            --cat-reg: #2563EB;
+            --cat-reg-bg: #EFF6FF;
+            --cat-mercado: #EA580C;
+            --cat-mercado-bg: #FFF7ED;
+            --cat-papers: #0891B2;
+            --cat-papers-bg: #ECFEFF;
+            --cat-dist: #CA8A04;
+            --cat-dist-bg: #FEFCE8;
+            --cat-gera: #6B7280;
+            --cat-gera-bg: #F3F4F6;
+            --cat-global: #047857;
+            --cat-global-bg: #ECFDF5;
+
+            /* Layout */
+            --max-w: 1200px;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+            --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.05);
+            --transition: 200ms cubic-bezier(.4,0,.2,1);
+        }
+
+        /* ===== DARK MODE ===== */
+        .dark {
+            --gray-50: #09090B;
+            --gray-100: #111114;
+            --gray-200: #1E1E22;
+            --gray-300: #2A2A2F;
+            --gray-400: #52525B;
+            --gray-500: #71717A;
+            --gray-600: #A1A1AA;
+            --gray-700: #D4D4D8;
+            --gray-800: #E4E4E7;
+            --gray-900: #FAFAFA;
+            --daimon-orange-subtle: #2A1E0E;
+
+            --cat-ia-bg: #1E1335;
+            --cat-renov-bg: #0C1F18;
+            --cat-reg-bg: #0E1830;
+            --cat-mercado-bg: #231408;
+            --cat-papers-bg: #0C1A1F;
+            --cat-dist-bg: #1C1A08;
+            --cat-gera-bg: #18181B;
+            --cat-global-bg: #0C1F18;
+
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.2);
+            --shadow: 0 1px 3px rgba(0,0,0,.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,.3);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: #fff;
+            border-bottom: 3px solid var(--daimon-orange);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+
+        .dark .header {
+            background: var(--daimon-black);
+            box-shadow: none;
+        }
+
+        .dark .logo-img {
+            filter: brightness(0) invert(1);
+        }
+
+        .header-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .logo-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-img {
+            height: 32px;
+            width: auto;
+            flex-shrink: 0;
+        }
+
+        .dark .logo-img {
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-pulse {
+            color: var(--daimon-orange);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+            line-height: 1;
+        }
+
+        .logo-sub {
+            color: var(--gray-400);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding-left: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 999px;
+            padding: 7px 14px;
+            color: var(--gray-400);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-box:hover { background: var(--gray-200); }
+
+        .search-box kbd {
+            background: var(--gray-200);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 11px;
+            font-family: inherit;
+            color: var(--gray-500);
+        }
+
+        .dark .search-box {
+            background: rgba(255,255,255,.08);
+            border-color: rgba(255,255,255,.1);
+        }
+
+        .dark .search-box:hover { background: rgba(255,255,255,.12); }
+
+        .dark .search-box kbd { background: rgba(255,255,255,.1); color: var(--gray-400); }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gray-100);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .btn-icon:hover { background: var(--gray-200); color: var(--gray-700); }
+
+        .dark .btn-icon { background: rgba(255,255,255,.08); color: var(--gray-400); }
+        .dark .btn-icon:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--daimon-orange), var(--daimon-orange-light));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ===== DATE BAR ===== */
+        .date-bar {
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .date-bar-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .date-bar-inner strong {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .date-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            background: var(--daimon-orange-subtle);
+            color: var(--daimon-orange);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+        /* ===== HEADLINE ===== */
+        .headline {
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 340px;
+            margin-bottom: 32px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .headline-img {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+            overflow: hidden;
+            min-height: 340px;
+        }
+
+        .headline-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 70%, rgba(217,123,30,.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(240,160,64,.1) 0%, transparent 50%);
+        }
+
+        .headline-img-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 1;
+        }
+
+        .headline-img svg { opacity: .15; }
+
+        .headline-body {
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .headline-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--daimon-orange);
+        }
+
+        .headline-title {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -.5px;
+            color: var(--gray-900);
+        }
+
+        .headline-excerpt {
+            font-size: 15px;
+            color: var(--gray-500);
+            line-height: 1.65;
+        }
+
+        .headline-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray-400);
+            padding-top: 4px;
+        }
+
+        .headline-meta .source {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .btn-read {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--daimon-orange);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: fit-content;
+        }
+
+        .btn-read:hover { background: var(--daimon-orange-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+        /* ===== SUMMARY STRIP ===== */
+        .summary-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+
+        .summary-card:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); }
+
+        .summary-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--daimon-orange);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .summary-text {
+            font-size: 13.5px;
+            color: var(--gray-700);
+            line-height: 1.5;
+        }
+
+        /* ===== FILTER CHIPS ===== */
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filters-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-right: 4px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            border: 1.5px solid var(--gray-200);
+            background: var(--gray-50);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .chip:hover { border-color: var(--gray-300); background: var(--gray-100); }
+
+        .chip.active {
+            border-color: var(--daimon-orange);
+            background: var(--daimon-orange-subtle);
+            color: var(--daimon-orange);
+            font-weight: 600;
+        }
+
+        .chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chip-count {
+            background: var(--gray-200);
+            color: var(--gray-500);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 999px;
+            margin-left: 2px;
+        }
+
+        .chip.active .chip-count {
+            background: var(--daimon-orange);
+            color: #fff;
+        }
+
+        /* ===== CARDS GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gray-300);
+            transform: translateY(-2px);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-top {
+            padding: 22px 22px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .card-tag .tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .card-body {
+            padding: 14px 22px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--gray-900);
+            margin-bottom: 10px;
+            letter-spacing: -.2px;
+        }
+
+        .card-excerpt {
+            font-size: 13.5px;
+            color: var(--gray-500);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .card-footer {
+            padding: 14px 22px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .card-source {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .card-source-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            background: var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--gray-600);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .card-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--gray-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .card-action-btn:hover { background: var(--gray-200); color: var(--gray-600); }
+
+        /* ===== TYPE TAGS ===== */
+        .type-noticia { background: var(--cat-reg-bg); color: var(--cat-reg); }
+        .type-noticia .tag-dot { background: var(--cat-reg); }
+        .type-paper { background: var(--cat-papers-bg); color: var(--cat-papers); }
+        .type-paper .tag-dot { background: var(--cat-papers); }
+        .type-resolucao { background: var(--cat-reg-bg); color: var(--cat-reg); }
+        .type-resolucao .tag-dot { background: var(--cat-reg); }
+        .type-analise { background: var(--cat-mercado-bg); color: var(--cat-mercado); }
+        .type-analise .tag-dot { background: var(--cat-mercado); }
+        .type-artigo { background: var(--cat-ia-bg); color: var(--cat-ia); }
+        .type-artigo .tag-dot { background: var(--cat-ia); }
+        .type-tendencia { background: var(--cat-global-bg); color: var(--cat-global); }
+        .type-tendencia .tag-dot { background: var(--cat-global); }
+        .type-lei { background: var(--cat-dist-bg); color: var(--cat-dist); }
+        .type-lei .tag-dot { background: var(--cat-dist); }
+
+        /* ===== WEEKLY DIGEST ===== */
+        .weekly {
+            background: linear-gradient(135deg, var(--daimon-black) 0%, #2a2216 100%);
+            border-radius: var(--radius);
+            padding: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .weekly-left { flex: 1; }
+
+        .weekly-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(217,123,30,.15);
+            color: var(--daimon-orange-light);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
+
+        .weekly-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .weekly-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,.5);
+            line-height: 1.6;
+        }
+
+        .btn-weekly {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--daimon-orange);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .btn-weekly:hover { background: var(--daimon-orange-hover); transform: translateY(-1px); }
+
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .accent-bar {
+            width: 4px;
+            height: 20px;
+            background: var(--daimon-orange);
+            border-radius: 2px;
+        }
+
+        .link-more {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--daimon-orange);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .link-more:hover { color: var(--daimon-orange-hover); gap: 6px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid var(--gray-200);
+            background: var(--gray-100);
+        }
+
+        .footer-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--gray-500);
+        }
+
+        .footer-brand .mini-logo {
+            height: 16px;
+            width: auto;
+            opacity: .5;
+        }
+
+        /* ===== DARK MODE TOGGLE ===== */
+        .theme-toggle { position: relative; }
+        .theme-toggle svg.sun { display: none; }
+        .dark .theme-toggle svg.sun { display: block; }
+        .dark .theme-toggle svg.moon { display: none; }
+
+        /* ===== ARTICLE DETAIL (MODAL OVERLAY) ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .overlay.open { display: flex; }
+
+        .article-detail {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            max-width: 720px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .article-detail-header {
+            padding: 28px 32px 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .article-detail-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gray-200);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .article-detail-close:hover { background: var(--gray-300); }
+
+        .article-detail-body {
+            padding: 20px 32px 32px;
+        }
+
+        .article-detail-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+        }
+
+        .article-detail-title {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.25;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+
+        .article-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--gray-400);
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .article-detail-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--gray-700);
+        }
+
+        .article-detail-content p { margin-bottom: 16px; }
+
+        .article-ai {
+            background: var(--daimon-orange-subtle);
+            border-left: 3px solid var(--daimon-orange);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+
+        .article-ai-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--daimon-orange);
+            margin-bottom: 8px;
+        }
+
+        .article-ai-text {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .article-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--daimon-orange);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: var(--transition);
+        }
+
+        .article-link:hover { gap: 8px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .headline { grid-template-columns: 1fr; }
+            .headline-img { min-height: 200px; }
+            .cards-grid { grid-template-columns: repeat(2, 1fr); }
+            .summary-strip { grid-template-columns: 1fr; }
+            .weekly { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 600px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .headline-body { padding: 24px 20px; }
+            .headline-title { font-size: 20px; }
+            .header-inner { padding: 0 16px; }
+            .main { padding: 20px 16px 40px; }
+            .search-box span, .search-box kbd { display: none; }
+            .weekly { padding: 24px; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { animation: fadeUp .4s ease both; }
+        .card:nth-child(1) { animation-delay: 0s; }
+        .card:nth-child(2) { animation-delay: .05s; }
+        .card:nth-child(3) { animation-delay: .1s; }
+        .card:nth-child(4) { animation-delay: .15s; }
+        .card:nth-child(5) { animation-delay: .2s; }
+        .card:nth-child(6) { animation-delay: .25s; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="logo-group">
+                    <div class="logo-top">
+                        <img src="img-removebg-preview.png" alt="Daimon" class="logo-img">
+                        <span class="logo-pulse">Pulse</span>
+                    </div>
+                    <div class="logo-sub">Inteligencia do Setor Eletrico</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="search-box" onclick="document.getElementById('searchOverlay').classList.add('open')">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <span>Buscar noticias...</span>
+                    <kbd>Ctrl K</kbd>
+                </div>
+                <button class="btn-icon theme-toggle" onclick="document.body.classList.toggle('dark')" title="Alternar tema">
+                    <svg class="moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
+                <button class="btn-icon" title="Notificacoes">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+                <div class="avatar">MP</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- DATE BAR -->
+    <div class="date-bar">
+        <div class="date-bar-inner">
+            <div><strong>Segunda-feira, 02 de Marco de 2026</strong> &mdash; Edicao #247</div>
+            <div class="date-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                12 noticias hoje
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- HEADLINE -->
+        <article class="headline" onclick="openArticle('headline')">
+            <div class="headline-img">
+                <img src="img/battery-storage.jpg" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)">
+            </div>
+            <div class="headline-body">
+                <div class="headline-label">
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Destaque do dia
+                </div>
+                <h1 class="headline-title">ANEEL aprova novas regras para integracao de baterias em sistemas de distribuicao</h1>
+                <p class="headline-excerpt">A resolucao normativa estabelece diretrizes ineditas para armazenamento de energia conectado a rede, abrindo caminho para projetos-piloto em cinco distribuidoras. Especialistas apontam que a medida pode reduzir perdas tecnicas em ate 15%.</p>
+                <div class="headline-meta">
+                    <span class="source">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Canal Energia
+                    </span>
+                    <span>28 fev 2026</span>
+                    <span>4 min de leitura</span>
+                </div>
+                <button class="btn-read">
+                    Ler completo
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </article>
+
+        <!-- SUMMARY STRIP -->
+        <div class="summary-strip">
+            <div class="summary-card">
+                <div class="summary-num">1</div>
+                <div class="summary-text">ANEEL aprova regulacao inedita para baterias em redes de distribuicao, viabilizando projetos-piloto em cinco concessionarias.</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-num">2</div>
+                <div class="summary-text">Estudo do IEEE aponta que modelos de IA preditiva podem reduzir perdas nao-tecnicas em ate 23% nas distribuidoras brasileiras.</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-num">3</div>
+                <div class="summary-text">Brasil atinge 50 GW de capacidade solar instalada e se consolida como quarto maior mercado fotovoltaico do mundo.</div>
+            </div>
+        </div>
+
+        <!-- FILTER CHIPS -->
+        <div class="filters">
+            <span class="filters-label">Filtrar:</span>
+            <button class="chip active" onclick="filterCards('all', this)">
+                Todos
+                <span class="chip-count">12</span>
+            </button>
+            <button class="chip" onclick="filterCards('ia', this)">
+                <span class="dot" style="background: var(--cat-ia)"></span>
+                IA & Tech
+                <span class="chip-count">3</span>
+            </button>
+            <button class="chip" onclick="filterCards('renov', this)">
+                <span class="dot" style="background: var(--cat-renov)"></span>
+                Renovaveis
+                <span class="chip-count">2</span>
+            </button>
+            <button class="chip" onclick="filterCards('reg', this)">
+                <span class="dot" style="background: var(--cat-reg)"></span>
+                Regulacao
+                <span class="chip-count">2</span>
+            </button>
+            <button class="chip" onclick="filterCards('mercado', this)">
+                <span class="dot" style="background: var(--cat-mercado)"></span>
+                Mercado
+                <span class="chip-count">2</span>
+            </button>
+            <button class="chip" onclick="filterCards('papers', this)">
+                <span class="dot" style="background: var(--cat-papers)"></span>
+                Papers
+                <span class="chip-count">1</span>
+            </button>
+            <button class="chip" onclick="filterCards('dist', this)">
+                <span class="dot" style="background: var(--cat-dist)"></span>
+                Distribuicao
+                <span class="chip-count">1</span>
+            </button>
+            <button class="chip" onclick="filterCards('global', this)">
+                <span class="dot" style="background: var(--cat-global)"></span>
+                Global
+                <span class="chip-count">1</span>
+            </button>
+        </div>
+
+        <!-- SECTION HEADER -->
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="accent-bar"></span>
+                Hoje no Setor
+            </h2>
+            <a href="#" class="link-more">
+                Ver todas
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- CARDS -->
+        <div class="cards-grid">
+            <!-- Card 1 -->
+            <div class="card" data-cat="ia" onclick="openArticle('ia-1')">
+                <img src="img/ai-tech.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-artigo"><span class="tag-dot"></span>IA & Tech</span>
+                    <span class="card-time">2h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Redes neurais aplicadas a previsao de demanda: novo modelo supera metodos tradicionais em 18%</h3>
+                    <p class="card-excerpt">Paper publicado no IEEE Transactions on Power Systems apresenta arquitetura transformer adaptada para series temporais de consumo eletrico.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">IE</div>
+                        IEEE Spectrum
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card" data-cat="renov" onclick="openArticle('renov-1')">
+                <img src="img/solar-panels.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-tendencia"><span class="tag-dot"></span>Renovaveis</span>
+                    <span class="card-time">3h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Brasil atinge 50 GW de solar e se torna 4o maior mercado fotovoltaico global</h3>
+                    <p class="card-excerpt">Marco historico coloca o pais a frente da Alemanha em capacidade instalada. Geracao distribuida responde por 60% do total.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">CE</div>
+                        Canal Energia
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card" data-cat="reg" onclick="openArticle('reg-1')">
+                <img src="img/regulation.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-resolucao"><span class="tag-dot"></span>Regulacao</span>
+                    <span class="card-time">4h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Consulta publica da ANEEL sobre modernizacao tarifaria recebe mais de 800 contribuicoes</h3>
+                    <p class="card-excerpt">Distribuidoras e associacoes debatem modelo de tarifa binomia para consumidores de baixa tensao. Decisao esperada para abril.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">AN</div>
+                        ANEEL
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card" data-cat="mercado" onclick="openArticle('mercado-1')">
+                <img src="img/market-charts.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-analise"><span class="tag-dot"></span>Mercado</span>
+                    <span class="card-time">5h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">PLD medio de fevereiro cai 22% e sinaliza excedente hidrico para o primeiro semestre</h3>
+                    <p class="card-excerpt">Reservatorios do subsistema SE/CO operam acima de 70%. CCEE projeta precos no piso para marco e abril.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">CC</div>
+                        CCEE
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="card" data-cat="papers" onclick="openArticle('papers-1')">
+                <img src="img/research-paper.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-paper"><span class="tag-dot"></span>Paper</span>
+                    <span class="card-time">6h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Digital twins para subestacoes: revisao sistematica identifica gaps e oportunidades</h3>
+                    <p class="card-excerpt">Meta-analise de 142 artigos publicada na Applied Energy mapeia o estado da arte de gemeos digitais aplicados a infraestrutura eletrica.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">AE</div>
+                        Applied Energy
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="card" data-cat="ia" onclick="openArticle('ia-2')">
+                <img src="img/smart-meter.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-artigo"><span class="tag-dot"></span>IA & Tech</span>
+                    <span class="card-time">7h atras</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Smart meters com edge AI: distribuidora mineira pilota deteccao de fraude em tempo real</h3>
+                    <p class="card-excerpt">Projeto de P&D da CEMIG usa modelos de machine learning embarcados em medidores inteligentes para identificar irregularidades no consumo.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">MW</div>
+                        MegaWhat
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="card-action-btn" title="Compartilhar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEEKLY DIGEST -->
+        <div class="weekly">
+            <div class="weekly-left">
+                <div class="weekly-badge">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    Digest Semanal
+                </div>
+                <h3 class="weekly-title">Semana 09/2026 — Baterias, IA e a nova onda regulatoria</h3>
+                <p class="weekly-desc">Analise curada das 3 tendencias que marcaram a semana no setor eletrico, com contexto e impacto para a equipe.</p>
+            </div>
+            <button class="btn-weekly">
+                Ler digest
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <!-- MORE CARDS SECTION -->
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="accent-bar"></span>
+                Mais desta semana
+            </h2>
+            <a href="#" class="link-more">
+                Arquivo completo
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card" data-cat="dist" onclick="openArticle('dist-1')">
+                <img src="img/distribution.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-lei"><span class="tag-dot"></span>Distribuicao</span>
+                    <span class="card-time">1 dia</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Perdas nao-tecnicas no Nordeste caem 3,2 p.p. em 2025 apos investimentos em medicao</h3>
+                    <p class="card-excerpt">Distribuidoras do grupo Neoenergia lideram reducao com programa de substituicao massiva de medidores convencionais por smart meters.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">GE</div>
+                        GESEL
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="global" onclick="openArticle('global-1')">
+                <img src="img/globe-energy.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-tendencia"><span class="tag-dot"></span>Global</span>
+                    <span class="card-time">1 dia</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">IEA eleva projecao de capacidade renovavel global para 2030 em 12% no novo World Energy Outlook</h3>
+                    <p class="card-excerpt">Relatorio destaca papel do Brasil e India na aceleracao da transicao energetica. Eolica offshore ganha protagonismo.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">IA</div>
+                        IEA
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" data-cat="mercado" onclick="openArticle('mercado-2')">
+                <img src="img/wind-turbines.jpg" alt="" class="card-img">
+                <div class="card-top">
+                    <span class="card-tag type-analise"><span class="tag-dot"></span>Mercado</span>
+                    <span class="card-time">2 dias</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Leilao A-5 contrata 2,3 GW de eolica a preco recorde de R$ 84/MWh</h3>
+                    <p class="card-excerpt">Resultado surpreende analistas com desagio de 31% sobre preco-teto. Bahia e Rio Grande do Norte concentram projetos vencedores.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-source">
+                        <div class="card-source-icon">CE</div>
+                        Canal Energia
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" title="Salvar">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="img.png" alt="Daimon" class="mini-logo">
+                Pulse &mdash; Uso interno
+            </div>
+            <div>Conteudo curado por IA &bull; Atualizado diariamente as 07:00</div>
+        </div>
+    </footer>
+
+    <!-- ARTICLE DETAIL OVERLAY -->
+    <div class="overlay" id="articleOverlay" onclick="if(event.target===this)closeArticle()">
+        <div class="article-detail">
+            <div class="article-detail-header">
+                <span class="article-detail-tag type-resolucao"><span class="tag-dot"></span>Regulacao</span>
+                <button class="article-detail-close" onclick="closeArticle()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="article-detail-body">
+                <img src="img/battery-storage.jpg" alt="" style="width:100%;height:220px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:20px">
+                <h2 class="article-detail-title">ANEEL aprova novas regras para integracao de baterias em sistemas de distribuicao</h2>
+                <div class="article-detail-meta">
+                    <span>Canal Energia</span>
+                    <span>28 fev 2026</span>
+                    <span>4 min de leitura</span>
+                </div>
+                <div class="article-detail-content">
+                    <p>A Agencia Nacional de Energia Eletrica (ANEEL) aprovou nesta sexta-feira a Resolucao Normativa n. 1.124/2026, que estabelece diretrizes ineditas para a conexao de sistemas de armazenamento de energia por baterias (BESS) as redes de distribuicao de eletricidade no Brasil.</p>
+                    <p>A regulamentacao define requisitos tecnicos minimos para a conexao, parametros de qualidade e seguranca, e cria uma modalidade especifica de contrato de uso do sistema de distribuicao para armazenadores. Cinco distribuidoras — CEMIG, CPFL, Enel SP, Energisa e Equatorial — foram autorizadas a conduzir projetos-piloto ate dezembro de 2027.</p>
+                    <p>Segundo a diretora-relatora, a medida responde a necessidade crescente de flexibilidade operacional do sistema eletrico frente ao aumento da geracao intermitente. Especialistas do setor estimam que a integracao de baterias pode reduzir perdas tecnicas em ate 15% nos alimentadores com alta penetracao solar.</p>
+                </div>
+                <div class="article-ai">
+                    <div class="article-ai-label">Analise Daimon Pulse</div>
+                    <div class="article-ai-text">Esta resolucao impacta diretamente os projetos de P&D da equipe em armazenamento e smart grids. A definicao de requisitos tecnicos para BESS cria oportunidades para consultoria de planejamento junto as cinco distribuidoras autorizadas. Recomenda-se acompanhar a abertura das chamadas de projetos-piloto.</div>
+                </div>
+                <a href="#" class="article-link">
+                    Ver artigo original no Canal Energia
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter cards
+        function filterCards(cat, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            document.querySelectorAll('.card').forEach(card => {
+                if (cat === 'all' || card.dataset.cat === cat) {
+                    card.style.display = '';
+                    card.style.animation = 'none';
+                    card.offsetHeight; // trigger reflow
+                    card.style.animation = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Article overlay
+        function openArticle(id) {
+            document.getElementById('articleOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeArticle() {
+            document.getElementById('articleOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeArticle();
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                // search would open here
+            }
+        });
+    </script>
+</body>
+</html>
