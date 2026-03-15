@@ -1062,6 +1062,19 @@
             line-height: 1.2;
         }
 
+        .entity-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+        }
+
+        .entity-badge:has(.entity-logo),
+        .entity-badge--sm:has(.entity-logo) {
+            background: transparent !important;
+            border-color: var(--border) !important;
+        }
+
         [data-entity="aneel"] .entity-badge { background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2); }
         [data-entity="aneel"] .entity-abbr  { color: var(--accent-blue); }
         [data-entity="mme"] .entity-badge   { background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.2); }
@@ -1753,7 +1766,7 @@
 
                     <div class="orgao-tile animate-in" data-entity="aneel">
                         <div class="orgao-head">
-                            <div class="entity-badge"><span class="entity-abbr">ANEEL</span></div>
+                            <div class="entity-badge"><img src="img/logos/aneel.png" alt="ANEEL" class="entity-logo"></div>
                             <div class="orgao-meta">
                                 <span class="orgao-name">Ag. Nac. de Energia Eletrica</span>
                                 <span class="orgao-type">Regulador Federal</span>
@@ -1786,7 +1799,7 @@
 
                     <div class="orgao-tile animate-in delay-1" data-entity="mme">
                         <div class="orgao-head">
-                            <div class="entity-badge"><span class="entity-abbr">MME</span></div>
+                            <div class="entity-badge"><img src="img/logos/mme.png" alt="MME" class="entity-logo"></div>
                             <div class="orgao-meta">
                                 <span class="orgao-name">Ministerio de Minas e Energia</span>
                                 <span class="orgao-type">Poder Executivo</span>
@@ -1819,7 +1832,7 @@
 
                     <div class="orgao-tile animate-in delay-2" data-entity="ons">
                         <div class="orgao-head">
-                            <div class="entity-badge"><span class="entity-abbr">ONS</span></div>
+                            <div class="entity-badge"><img src="img/logos/ons.png" alt="ONS" class="entity-logo"></div>
                             <div class="orgao-meta">
                                 <span class="orgao-name">Operador Nac. do Sistema</span>
                                 <span class="orgao-type">Operador</span>
@@ -1852,7 +1865,7 @@
 
                     <div class="orgao-tile animate-in delay-3" data-entity="epe">
                         <div class="orgao-head">
-                            <div class="entity-badge"><span class="entity-abbr">EPE</span></div>
+                            <div class="entity-badge"><img src="img/logos/epe.png" alt="EPE" class="entity-logo"></div>
                             <div class="orgao-meta">
                                 <span class="orgao-name">Empresa de Pesquisa Energetica</span>
                                 <span class="orgao-type">Planejamento</span>
@@ -1885,7 +1898,7 @@
 
                     <div class="orgao-tile animate-in delay-4" data-entity="ccee">
                         <div class="orgao-head">
-                            <div class="entity-badge"><span class="entity-abbr">CCEE</span></div>
+                            <div class="entity-badge"><img src="img/logos/ccee.png" alt="CCEE" class="entity-logo"></div>
                             <div class="orgao-meta">
                                 <span class="orgao-name">Camara de Comerc. de Energia</span>
                                 <span class="orgao-type">Mercado</span>
@@ -1925,7 +1938,7 @@
 
                     <div class="agente-chip" data-signal="high" style="--signal-pct:82%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">CEMIG</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/cemig.png" alt="CEMIG" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:82%"></div></div>
                             <span class="agente-count">4 news</span>
                         </div>
@@ -1939,7 +1952,7 @@
 
                     <div class="agente-chip" data-signal="high" style="--signal-pct:71%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">ENEL</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/enel.png" alt="ENEL" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:71%"></div></div>
                             <span class="agente-count">3 news</span>
                         </div>
@@ -1952,7 +1965,7 @@
 
                     <div class="agente-chip" data-signal="med" style="--signal-pct:58%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">CPFL</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/cpfl.png" alt="CPFL" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:58%"></div></div>
                             <span class="agente-count">2 news</span>
                         </div>
@@ -1965,7 +1978,7 @@
 
                     <div class="agente-chip" data-signal="med" style="--signal-pct:52%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">NEO</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/neoenergia.png" alt="Neoenergia" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:52%"></div></div>
                             <span class="agente-count">2 news</span>
                         </div>
@@ -1978,7 +1991,7 @@
 
                     <div class="agente-chip" data-signal="med" style="--signal-pct:50%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">EQT</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/equatorial.png" alt="Equatorial" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:50%"></div></div>
                             <span class="agente-count">2 news</span>
                         </div>
@@ -1991,7 +2004,7 @@
 
                     <div class="agente-chip" data-signal="med" style="--signal-pct:45%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">ENRS</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/energisa.png" alt="Energisa" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:45%"></div></div>
                             <span class="agente-count">2 news</span>
                         </div>
@@ -2004,7 +2017,7 @@
 
                     <div class="agente-chip" data-signal="low" style="--signal-pct:28%">
                         <div class="agente-chip-head">
-                            <div class="entity-badge--sm"><span class="entity-abbr">LGHT</span></div>
+                            <div class="entity-badge--sm"><img src="img/logos/light.png" alt="Light" class="entity-logo"></div>
                             <div class="agente-signal-bar"><div class="signal-fill" style="width:28%"></div></div>
                             <span class="agente-count">1 news</span>
                         </div>
