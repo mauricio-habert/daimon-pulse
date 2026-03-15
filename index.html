@@ -13,22 +13,22 @@
         :root {
             --orange: #D97B1E;
             --orange-light: #F0A040;
-            --orange-glow: rgba(217, 123, 30, .15);
-            --black: #0A0A0B;
-            --surface: #111113;
-            --surface-2: #19191C;
-            --surface-3: #222226;
-            --border: #2A2A2F;
-            --border-light: #333338;
-            --text: #EDEDEF;
-            --text-secondary: #8B8B93;
-            --text-muted: #7A7A83;
-            --accent-purple: #A78BFA;
-            --accent-green: #34D399;
-            --accent-blue: #60A5FA;
-            --accent-cyan: #22D3EE;
-            --accent-rose: #FB7185;
-            --accent-amber: #FBBF24;
+            --orange-glow: rgba(217, 123, 30, .08);
+            --black: #FAFAF8;
+            --surface: #FFFFFF;
+            --surface-2: #F5F5F3;
+            --surface-3: #EAEAE8;
+            --border: #E3E3E0;
+            --border-light: #D0D0CD;
+            --text: #1A1A1C;
+            --text-secondary: #5C5C65;
+            --text-muted: #8C8C95;
+            --accent-purple: #6D28D9;
+            --accent-green: #059669;
+            --accent-blue: #2563EB;
+            --accent-cyan: #0891B2;
+            --accent-rose: #E11D48;
+            --accent-amber: #D97706;
             --radius: 16px;
             --radius-sm: 10px;
             --radius-xs: 6px;
@@ -51,7 +51,7 @@
             content: '';
             position: fixed;
             inset: 0;
-            opacity: .03;
+            opacity: .018;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 9999;
@@ -67,9 +67,10 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(10,10,11,.85);
-            backdrop-filter: blur(20px) saturate(1.8);
+            background: rgba(255,255,255,.9);
+            backdrop-filter: blur(20px) saturate(1.2);
             border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
         }
 
         .header-inner {
@@ -99,7 +100,7 @@
             height: 28px;
             border-radius: 50%;
             background: radial-gradient(circle at 38% 35%, #F0A040, var(--orange), #8B5A10);
-            box-shadow: 0 0 12px rgba(217, 123, 30, .35);
+            box-shadow: 0 0 12px rgba(217, 123, 30, .25);
             flex-shrink: 0;
         }
 
@@ -225,12 +226,13 @@
             overflow: hidden;
             transition: all .3s cubic-bezier(.4,0,.2,1);
             position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
         }
 
         .tile:hover {
             border-color: var(--border-light);
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,.08);
         }
 
         /* TILE: Headline */
@@ -538,12 +540,13 @@
             transition: all .3s cubic-bezier(.4,0,.2,1);
             display: flex;
             flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
         }
 
         .card:hover {
             border-color: var(--border-light);
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,.08);
         }
 
         .card-wide {
@@ -1022,7 +1025,7 @@
         .orgao-tile:hover {
             border-color: var(--border-light);
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,.08);
         }
 
         .orgao-tile:hover::before { opacity: 1; }
@@ -1345,8 +1348,7 @@
         .footer-brand img {
             height: 14px;
             width: auto;
-            opacity: .4;
-            filter: brightness(0) invert(1);
+            opacity: .5;
         }
 
         /* ===== ANIMATIONS ===== */
